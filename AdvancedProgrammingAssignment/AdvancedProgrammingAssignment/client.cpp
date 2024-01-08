@@ -19,6 +19,7 @@ using namespace std;
 using namespace cv;
 void sendImage(int socket, Mat image, sockaddr_in server, const string& path)
 {
+    std::cout << "Send Function called" << std::endl;
     vector<uchar> imageToSend;
     imencode(path, image, imageToSend);
     size_t imageSize = imageToSend.size();
@@ -30,7 +31,7 @@ void sendImage(int socket, Mat image, sockaddr_in server, const string& path)
     sendto(socket, (const char*)sizeBuffer, sizeof(size_t), 0, (const struct sockaddr*)&server, sizeof(server)); //sends the size of the image for the client to copy
     while (remainingBytes > 0) {
         size_t sendingSize = remainingBytes > BUFFER_SIZE ? BUFFER_SIZE : remainingBytes; //ensures the packet size does not exceed the buffer size for UDP
-        while (sendto(socket, (const char*)currentSendPos, sendingSize, 0, (const struct sockaddr*)&server, sizeof(server)) < 0) {
+        while (sendto(socket, (char*)currentSendPos, sendingSize, 0, (const struct sockaddr*)&server, sizeof(server)) < 0) {
             std::cout << "Error sending packet, redoing" << std::endl;
         }
         remainingBytes -= sendingSize;
@@ -45,6 +46,7 @@ void recieveImage(int socket, sockaddr_in &server, Mat& finalImage) {
     recvfrom(socket, (char*)sizeRecieved, sizeof(size_t), 0, (struct sockaddr*)&server, &clientLength); //recieves the size of the image and stores in a char array
     memcpy(&newBufferSize, sizeRecieved, sizeof(size_t));
     char* buffer = new char[newBufferSize]; //done dynamically in case image is high res and therefore requires more memory
+    //std::cout << "Recieve function called" << std::endl;
     char* currentRecieve = &buffer[0];
     size_t remainingBytes = newBufferSize;
     while (remainingBytes > 0) {
@@ -105,7 +107,7 @@ int main(int argc, char** argv) {
     clientLength = sizeof(clientAddress);
     sendto(clientSocket, (const char*)messageToServer, strlen(messageToServer), 0, (const struct sockaddr*)&serverAddress, sizeof(serverAddress));
     delete[] messageToServer;
-    string s = argv[0];
+    string s = argv[1];
     size_t pos = s.find(".");
     sendImage(clientSocket, image, serverAddress, s.substr(pos));
     Mat finalImage;

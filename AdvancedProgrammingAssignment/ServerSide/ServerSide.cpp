@@ -53,7 +53,7 @@ void sendImage(int socket, cv::Mat image, sockaddr_in server, const string& path
     sendto(socket, (const char*)sizeBuffer, sizeof(size_t), 0, (const struct sockaddr*)&server, sizeof(server)); //sends the size of the image for the client to copy
     while (remainingBytes > 0) {
         size_t sendingSize = remainingBytes > BUFFER_SIZE ? BUFFER_SIZE : remainingBytes; //ensures the packet size does not exceed the buffer size for UDP
-        while (sendto(socket, (const char*)currentSendPos, sendingSize, 0, (const struct sockaddr*)&server, sizeof(server)) < 0) {
+        while (sendto(socket, (char*)currentSendPos, sendingSize, 0, (const struct sockaddr*)&server, sizeof(server)) < 0) {
             std::cout << "Error sending packet, redoing" << std::endl;
         }
         remainingBytes -= sendingSize;
@@ -62,6 +62,7 @@ void sendImage(int socket, cv::Mat image, sockaddr_in server, const string& path
     delete[] imageBuffer;
 }
 void recieveImage(int socket, sockaddr_in server, cv::Mat& finalImage) {
+    std::cout << "Recieve function called " << std::endl;
     char sizeRecieved[sizeof(size_t)];
     size_t newBufferSize;
     int clientLength = sizeof(sockaddr_in);
@@ -82,6 +83,7 @@ void recieveImage(int socket, sockaddr_in server, cv::Mat& finalImage) {
     vector<uchar> finalImageToConvert;
     finalImageToConvert.assign(buffer, buffer + newBufferSize); //similar to
     finalImage = cv::imdecode(cv::Mat(finalImageToConvert), 1);
+    std::cout << "Image recieved" << std::endl;
     delete[] buffer;
 }
 int main() {
@@ -125,6 +127,7 @@ int main() {
     size_t response = recvfrom(serverSocket, buffer, 1024, MSG_WAITALL, (struct sockaddr*)&clientAddress, &clientLength);
     buffer[response] = '\0'; //size_t will be the size of the char array, so last character should be a return char
     string arguments = std::string(buffer); //to convert the arguments recieved from the console, a string is used
+    std::cout << response << std::endl;
     istringstream spaceRemover(arguments); //string stream will be utilised to remove the spaces
     string toAssign;
     while (getline(spaceRemover, toAssign, ' ')) //gets each portion of the string (via stringstream) and seperates via spaces.
@@ -142,7 +145,7 @@ int main() {
     cv::destroyWindow("Test Window");
     cv::waitKey(0);
     recieveImage(serverSocket, serverAddress, image);
-    string path = argumentsList[0];
+    string path = argumentsList[1];
     argumentsList.erase(argumentsList.begin() + 0); //first element no longer needed for the vector
     imageProcessing* filter; //required for dynamic allocation
     Filters f;
