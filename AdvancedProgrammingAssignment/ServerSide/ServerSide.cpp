@@ -150,6 +150,7 @@ int main() {
     catch (InvalidOperationException e)
     {
         //cout << e << endl; //operator overloading should display message from e
+        cout << "Catch called 1" << std::endl;
         closesocket(serverSocket);
     }
     cv::Mat finalImage;
@@ -167,6 +168,7 @@ int main() {
             filter = new Blur(argumentsList, image);
             finalImage = filter->process();
         case FLIP:
+            std::cout << "Called for no fucking reason" << std::endl;
             filter = new Flip(argumentsList, image);
             finalImage = filter->process();
         case RESIZE:
@@ -180,21 +182,26 @@ int main() {
             closesocket(serverSocket);
         }
     }
+    
     catch (InvalidOperationException e)
     {
         //cout << "Operation of type " << e << "does not exist!" << endl;
+        cout << "Catch called 2" << std::endl;
         closesocket(serverSocket);
     }
     catch (NonNumeric e) {
         //cout << "String: " << e << " was detected when it should be numeric!" << endl;
+        cout << "Catch called 3" << std::endl;
         closesocket(serverSocket);
     }
     catch (MissingArgs e) {
         //cout << e << endl;
+        cout << "Catch called 4" << std::endl;
         closesocket(serverSocket);
     }
+    
     size_t pos = path.find(".jpg");
-    sendImage(serverSocket, finalImage, serverAddress, path.substr(pos));
+    sendImage(serverSocket, finalImage, clientAddress, path.substr(pos));
     return 0;
     closesocket(serverSocket);
 }
