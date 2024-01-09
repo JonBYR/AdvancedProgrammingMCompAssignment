@@ -27,7 +27,7 @@ using namespace std;
 enum Filters { ROTATE, COLOURADJUST, BLUR, FLIP, RESIZE, COLOURCONVERT }; //enum used to contain filters
 Filters enumConvert(const string& filterName) throw(InvalidOperationException) //const used to make sure filterName does not change
 {
-    if (filterName == "rotate") return ROTATE;
+    if (filterName == "rotation") return ROTATE;
     else if (filterName == "brightness" || filterName == "contrast" || filterName == "gamma") return COLOURADJUST;
     else if (filterName == "guassian" || filterName == "box" || filterName == "sharpening") return BLUR;
     else if (filterName == "flip") return FLIP;
@@ -125,10 +125,9 @@ int main() {
     socklen_t clientLength;
     clientLength = sizeof(clientAddress);
     std::cout << "Waiting for response" << std::endl;
-    size_t response = recvfrom(serverSocket, buffer, 1024, 0, (struct sockaddr*)&clientAddress, &clientLength);
-    buffer[response] = '\0'; //size_t will be the size of the char array, so last character should be a return char
+    if (recvfrom(serverSocket, buffer, 1024, 0, (struct sockaddr*)&clientAddress, &clientLength) == SOCKET_ERROR) cout << WSAGetLastError() << std::endl;
+    //size_t response = recvfrom(serverSocket, buffer, 1024, 0, (struct sockaddr*)&clientAddress, &clientLength);
     string arguments = std::string(buffer); //to convert the arguments recieved from the console, a string is used
-    std::cout << response << std::endl;
     istringstream spaceRemover(arguments); //string stream will be utilised to remove the spaces
     string toAssign;
     while (getline(spaceRemover, toAssign, ' ')) //gets each portion of the string (via stringstream) and seperates via spaces.
@@ -138,18 +137,16 @@ int main() {
     }
     //the following code is required to get the size of the image, as UDP has a file size limit of 64kB when sending packets
     cv::Mat image;
-    if (image.empty())
-    {
-        cout << "Cannot open image" << endl;
-        closesocket(serverSocket);
-    }
-    cv::destroyWindow("Test Window");
-    cv::waitKey(0);
     recieveImage(serverSocket, serverAddress, image);
     string path = argumentsList[1];
-    argumentsList.erase(argumentsList.begin() + 0); //first element no longer needed for the vector
+    argumentsList.erase(argumentsList.begin() + 1); //second and first element no longer needed for the vector
+    argumentsList.erase(argumentsList.begin() + 0);
     imageProcessing* filter; //required for dynamic allocation
     Filters f;
+    for (int i = 0; i < argumentsList.size(); i++) 
+    {
+        std::cout << argumentsList[i] << std::endl;
+    }
     try
     {
         f = enumConvert(argumentsList[0]); //there is no convertion from string to enum, so a function is used instead
@@ -202,7 +199,7 @@ int main() {
         closesocket(serverSocket);
     }
     
-    size_t pos = path.find(".");
+    size_t pos = path.find(".jpg");
     sendImage(serverSocket, finalImage, serverAddress, path.substr(pos));
     return 0;
     closesocket(serverSocket);

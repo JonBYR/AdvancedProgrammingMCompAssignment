@@ -40,15 +40,26 @@ void sendImage(int socket, Mat image, sockaddr_in server, const string& path)
     delete[] imageBuffer;
 }
 void recieveImage(int socket, sockaddr_in &server, Mat& finalImage) {
+    bool serverSend = false;
     char sizeRecieved[sizeof(size_t)];
     size_t newBufferSize;
     int clientLength = sizeof(sockaddr_in);
     std::cout << "Before Recieve" << std::endl;
-    while (recvfrom(socket, (char*)sizeRecieved, sizeof(size_t), 0, (struct sockaddr*)&server, &clientLength) == SOCKET_ERROR) {
-        std::cout << "No server has been established" << std::endl;
-    } //recieves the size of the image and stores in a char array
-    std::cout << "Recieve function called" << std::endl;
+    while (!serverSend) //client is waiting for the server to send information
+    {
+        if (recvfrom(socket, (char*)sizeRecieved, sizeof(size_t), 0, (struct sockaddr*)&server, &clientLength) == SOCKET_ERROR) { //if server has not yet send information
+            std::cout << "No server has been established" << std::endl;
+            continue; //continue goes to next iteration, while loop continues until server has successfully sent the information required
+        }
+        else {
+            serverSend = true;
+            break; //stop while loop as server is now sending information
+        }
+    }
+     //recieves the size of the image and stores in a char array
+    std::cout << "Recieve while finished" << std::endl;
     memcpy(&newBufferSize, sizeRecieved, sizeof(size_t));
+    std::cout << "Memory successfully copied" << std::endl;
     char* buffer = new char[newBufferSize]; //done dynamically in case image is high res and therefore requires more memory
     char* currentRecieve = &buffer[0];
     size_t remainingBytes = newBufferSize;
@@ -67,7 +78,7 @@ void recieveImage(int socket, sockaddr_in &server, Mat& finalImage) {
     delete[] buffer;
 }
 int main(int argc, char** argv) {
-    if (argc > 5 || argc <= 0) {
+    if (argc > 5 || argc <= 2) {
         std::cerr << "Usage: ./data_processing_program <input_file> <filter> <required_parameters>" << std::endl;
         return 0;
     }
