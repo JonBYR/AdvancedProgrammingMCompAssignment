@@ -124,7 +124,8 @@ int main() {
     }
     socklen_t clientLength;
     clientLength = sizeof(clientAddress);
-    size_t response = recvfrom(serverSocket, buffer, 1024, MSG_WAITALL, (struct sockaddr*)&clientAddress, &clientLength);
+    std::cout << "Waiting for response" << std::endl;
+    size_t response = recvfrom(serverSocket, buffer, 1024, 0, (struct sockaddr*)&clientAddress, &clientLength);
     buffer[response] = '\0'; //size_t will be the size of the char array, so last character should be a return char
     string arguments = std::string(buffer); //to convert the arguments recieved from the console, a string is used
     std::cout << response << std::endl;

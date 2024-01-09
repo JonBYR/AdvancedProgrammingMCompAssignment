@@ -43,10 +43,13 @@ void recieveImage(int socket, sockaddr_in &server, Mat& finalImage) {
     char sizeRecieved[sizeof(size_t)];
     size_t newBufferSize;
     int clientLength = sizeof(sockaddr_in);
-    recvfrom(socket, (char*)sizeRecieved, sizeof(size_t), 0, (struct sockaddr*)&server, &clientLength); //recieves the size of the image and stores in a char array
+    std::cout << "Before Recieve" << std::endl;
+    while (recvfrom(socket, (char*)sizeRecieved, sizeof(size_t), 0, (struct sockaddr*)&server, &clientLength) == SOCKET_ERROR) {
+        std::cout << "No server has been established" << std::endl;
+    } //recieves the size of the image and stores in a char array
+    std::cout << "Recieve function called" << std::endl;
     memcpy(&newBufferSize, sizeRecieved, sizeof(size_t));
     char* buffer = new char[newBufferSize]; //done dynamically in case image is high res and therefore requires more memory
-    //std::cout << "Recieve function called" << std::endl;
     char* currentRecieve = &buffer[0];
     size_t remainingBytes = newBufferSize;
     while (remainingBytes > 0) {
@@ -79,15 +82,22 @@ int main(int argc, char** argv) {
 
     int clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
     //char buffer[BUFFER_SIZE];
-    Mat image = imread(argv[1], IMREAD_COLOR);
+    std::string imagePath = argv[1];
+    Mat image = imread(imagePath, IMREAD_COLOR);
     if (clientSocket == -1) {
         std::cerr << "Error creating socket." << std::endl;
         return 1;
     }
-    char* messageToServer = new char[argc];
+    char* messageToServer = new char[1024];
+    char* messagePoint = &messageToServer[0];
     for (int i = 0; i < argc; i++) { //loops through input arguments, aside from the client file
-        messageToServer[i] = *argv[i];
-        std::cout << messageToServer[i] << std::endl;
+        char* currentArg = argv[i];
+        for (int j = 0; j < strlen(argv[i]); j++) {
+            *messagePoint = currentArg[j]; //dereferencing pointer assigns the character of messageToServer at position messagePoint
+            messagePoint++; //will cause the next character in messagetoserver to be the next index via pointer addition
+        }
+        *messagePoint = ' '; //dereference so that the next char after a parameter is a space
+        messagePoint++;
     }
     if (image.empty())
     {
@@ -105,10 +115,10 @@ int main(int argc, char** argv) {
     serverAddress.sin_addr.s_addr =  inet_addr("127.0.0.1");
     socklen_t clientLength;
     clientLength = sizeof(clientAddress);
-    sendto(clientSocket, (const char*)messageToServer, strlen(messageToServer), 0, (const struct sockaddr*)&serverAddress, sizeof(serverAddress));
+    sendto(clientSocket, (const char*)messageToServer, 1024, 0, (const struct sockaddr*)&serverAddress, sizeof(serverAddress));
     delete[] messageToServer;
     string s = argv[1];
-    size_t pos = s.find(".");
+    size_t pos = s.find(".jpg");
     sendImage(clientSocket, image, serverAddress, s.substr(pos));
     Mat finalImage;
     recieveImage(clientSocket, serverAddress, finalImage);
