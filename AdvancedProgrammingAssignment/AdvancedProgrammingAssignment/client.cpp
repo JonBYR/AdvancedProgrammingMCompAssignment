@@ -29,7 +29,7 @@ void sendImage(int socket, Mat image, sockaddr_in server, const string& path)
     size_t remainingBytes = imageSize; //size of image left to send (that is partitioned in packets)
     char sizeBuffer[sizeof(size_t)];
     memcpy(sizeBuffer, &imageSize, sizeof(size_t)); //stores the size of the image as a char
-    std::cout << "Image Size" << imageSize << std::endl;
+    std::cout << "Image Size" << imageToSend.size() << std::endl;
     sendto(socket, (const char*)sizeBuffer, sizeof(size_t), 0, (const struct sockaddr*)&server, sizeof(server)); //sends the size of the image for the client to copy
     while (remainingBytes > 0) {
         size_t sendingSize = remainingBytes > BUFFER_SIZE ? BUFFER_SIZE : remainingBytes; //ensures the packet size does not exceed the buffer size for UDP

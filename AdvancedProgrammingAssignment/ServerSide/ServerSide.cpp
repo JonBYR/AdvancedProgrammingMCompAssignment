@@ -55,7 +55,7 @@ void sendImage(int socket, cv::Mat image, sockaddr_in server, const string& path
     while (remainingBytes > 0) {
         size_t sendingSize = remainingBytes > BUFFER_SIZE ? BUFFER_SIZE : remainingBytes; //ensures the packet size does not exceed the buffer size for UDP
         while (sendto(socket, (char*)currentSendPos, sendingSize, 0, (const struct sockaddr*)&server, sizeof(server)) < 0) {
-            std::cout << "Error sending packet, redoing" << std::endl;
+            std::cout << WSAGetLastError() << std::endl;
             break;
         }
         remainingBytes -= sendingSize;
