@@ -42,6 +42,7 @@ void lowerCase(string& s) {
 }
 void sendImage(int socket, cv::Mat image, sockaddr_in server, const string& path)
 {
+    std::cout << "Sending Image" << std::endl;
     vector<uchar> imageToSend;
     cv::imencode(path, image, imageToSend);
     size_t imageSize = imageToSend.size();
@@ -50,17 +51,18 @@ void sendImage(int socket, cv::Mat image, sockaddr_in server, const string& path
     char sizeBuffer[sizeof(size_t)];
     memcpy(sizeBuffer, &imageSize, sizeof(size_t)); //stores the size of the image as a char
     sendto(socket, (const char*)sizeBuffer, sizeof(size_t), 0, (const struct sockaddr*)&server, sizeof(server)); //sends the size of the image for the client to copy
+    std::cout << imageToSend.size();
     while (remainingBytes > 0) {
         size_t sendingSize = remainingBytes > BUFFER_SIZE ? BUFFER_SIZE : remainingBytes; //ensures the packet size does not exceed the buffer size for UDP
         while (sendto(socket, (char*)currentSendPos, sendingSize, 0, (const struct sockaddr*)&server, sizeof(server)) < 0) {
             std::cout << "Error sending packet, redoing" << std::endl;
+            break;
         }
         remainingBytes -= sendingSize;
         currentSendPos += sendingSize; //change pointer address to be equal to how long the current packet is
     }
 }
 void recieveImage(int socket, sockaddr_in server, cv::Mat& finalImage) {
-    std::cout << "Recieve function called " << std::endl;
     char sizeRecieved[sizeof(size_t)];
     size_t newBufferSize;
     int clientLength = sizeof(sockaddr_in);
@@ -71,7 +73,7 @@ void recieveImage(int socket, sockaddr_in server, cv::Mat& finalImage) {
     size_t remainingBytes = newBufferSize;
     while (remainingBytes > 0) {
         size_t sendingSize = remainingBytes > BUFFER_SIZE ? BUFFER_SIZE : remainingBytes;
-        while (recvfrom(socket, (char*)currentRecieve, sendingSize, 0, (struct sockaddr*)&server, &clientLength) < 0) {
+        while (recvfrom(socket, (char*)currentRecieve, sendingSize, 0, (struct sockaddr*)&server, &clientLength) < 0) { //if recieve from fails it returns -1
             std::cout << "Error sending packet, redoing" << std::endl;
         }
         remainingBytes -= sendingSize;
@@ -81,7 +83,6 @@ void recieveImage(int socket, sockaddr_in server, cv::Mat& finalImage) {
     vector<uchar> finalImageToConvert;
     finalImageToConvert.assign(buffer, buffer + newBufferSize); //similar to
     finalImage = cv::imdecode(cv::Mat(finalImageToConvert), 1);
-    std::cout << "Image recieved" << std::endl;
     delete[] buffer;
 }
 int main() {
@@ -139,12 +140,9 @@ int main() {
     string path = argumentsList[1];
     argumentsList.erase(argumentsList.begin() + 1); //second and first element no longer needed for the vector
     argumentsList.erase(argumentsList.begin() + 0);
+    //argumentsList.erase(argumentsList.end()); //anything past the arguments is just empty space filled by the char array which is no longer needed
     imageProcessing* filter; //required for dynamic allocation
     Filters f;
-    for (int i = 0; i < argumentsList.size(); i++) 
-    {
-        std::cout << argumentsList[i] << std::endl;
-    }
     try
     {
         f = enumConvert(argumentsList[0]); //there is no convertion from string to enum, so a function is used instead
@@ -182,7 +180,6 @@ int main() {
             closesocket(serverSocket);
         }
     }
-    
     catch (InvalidOperationException e)
     {
         //cout << "Operation of type " << e << "does not exist!" << endl;
@@ -196,7 +193,6 @@ int main() {
         //cout << e << endl;
         closesocket(serverSocket);
     }
-    
     size_t pos = path.find(".jpg");
     sendImage(serverSocket, finalImage, serverAddress, path.substr(pos));
     return 0;

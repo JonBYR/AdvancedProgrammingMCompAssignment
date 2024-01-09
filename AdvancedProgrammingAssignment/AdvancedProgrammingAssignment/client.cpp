@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstring>
 #include <opencv2/opencv.hpp> //Required for opencv functions
+#include <thread>
+#include <chrono>
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #ifdef _WIN32
 #include <winsock2.h>
@@ -36,6 +38,7 @@ void sendImage(int socket, Mat image, sockaddr_in server, const string& path)
         }
         remainingBytes -= sendingSize;
         currentSendPos += sendingSize; //change pointer address to be equal to how long the current packet is
+        this_thread::sleep_for(chrono::milliseconds(1)); //asks main thread to wait 1 millisecond to ensure that server has correctly recieved the packet
     }
 }
 void recieveImage(int socket, sockaddr_in &server, Mat& finalImage) {
