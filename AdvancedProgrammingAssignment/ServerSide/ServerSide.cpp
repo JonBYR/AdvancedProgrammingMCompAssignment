@@ -45,8 +45,7 @@ void sendImage(int socket, cv::Mat image, sockaddr_in server, const string& path
     vector<uchar> imageToSend;
     cv::imencode(path, image, imageToSend);
     size_t imageSize = imageToSend.size();
-    char* imageBuffer = new char[imageSize];
-    char* currentSendPos = &imageBuffer[0]; //starting position to send image data 
+    uchar* currentSendPos = &imageToSend[0]; //starting position to send image data 
     size_t remainingBytes = imageSize; //size of image left to send (that is partitioned in packets)
     char sizeBuffer[sizeof(size_t)];
     memcpy(sizeBuffer, &imageSize, sizeof(size_t)); //stores the size of the image as a char
@@ -59,7 +58,6 @@ void sendImage(int socket, cv::Mat image, sockaddr_in server, const string& path
         remainingBytes -= sendingSize;
         currentSendPos += sendingSize; //change pointer address to be equal to how long the current packet is
     }
-    delete[] imageBuffer;
 }
 void recieveImage(int socket, sockaddr_in server, cv::Mat& finalImage) {
     std::cout << "Recieve function called " << std::endl;
@@ -68,7 +66,7 @@ void recieveImage(int socket, sockaddr_in server, cv::Mat& finalImage) {
     int clientLength = sizeof(sockaddr_in);
     recvfrom(socket, (char*)sizeRecieved, sizeof(size_t), 0, (struct sockaddr*)&server, &clientLength); //recieves the size of the image and stores in a char array
     memcpy(&newBufferSize, sizeRecieved, sizeof(size_t));
-    char* buffer = new char[newBufferSize]; //done dynamically in case image is high res and therefore requires more memory
+    char* buffer = new char[newBufferSize]; //done dynamically as server does not know size of image recieved at compile time
     char* currentRecieve = &buffer[0];
     size_t remainingBytes = newBufferSize;
     while (remainingBytes > 0) {
