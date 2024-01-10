@@ -112,6 +112,7 @@ int main(int argc, char** argv) {
         *messagePoint = ' '; //dereference so that the next char after a parameter is a space
         messagePoint++;
     }
+    *messagePoint = '\0'; //assigning a null character at the end of the c string to signify we are out of arguments
     if (image.empty())
     {
         cout << "Cannot open image" << endl;
