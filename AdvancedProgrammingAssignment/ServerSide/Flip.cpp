@@ -3,7 +3,7 @@ Flip::Flip (vector<string> remainingArgs, cv::Mat i) : imageProcessing(remaining
     adjustedImage = cv::Mat::zeros(image.size(), image.type());
     }
 cv::Mat Flip::process() throw(InvalidOperationException) {
-    if(requiredNumber == 0 || requiredNumber == 1 || requiredNumber == -1) { //only acceptable numbers for flipping are 0 and 1
+    if(requiredNumber == 0 || requiredNumber == 1 || requiredNumber == -1) { //only acceptable numbers for flipping are 0 and 1 and -1
         flip(image, adjustedImage, (int)requiredNumber);
         return adjustedImage;
     }

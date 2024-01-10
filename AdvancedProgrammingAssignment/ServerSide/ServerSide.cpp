@@ -27,7 +27,6 @@ using namespace std;
 enum Filters { ROTATE, COLOURADJUST, BLUR, FLIP, RESIZE, COLOURCONVERT }; //enum used to contain filters
 Filters enumConvert(const string& filterName) throw(InvalidOperationException) //const used to make sure filterName does not change
 {
-    std::cout << filterName << std::endl;
     if (filterName == "rotation") return ROTATE;
     else if (filterName == "brightness" || filterName == "contrast" || filterName == "gamma") return COLOURADJUST;
     else if (filterName == "guassian" || filterName == "box" || filterName == "sharpening") return BLUR;
@@ -35,7 +34,6 @@ Filters enumConvert(const string& filterName) throw(InvalidOperationException) /
     else if (filterName == "size") return RESIZE;
     else if (filterName == "greyscale" || filterName == "hsv") return COLOURCONVERT;
     else {
-        std::cout << "Thrown Called" << std::endl;
         throw InvalidOperationException(filterName);
     }
 }
@@ -44,7 +42,6 @@ void lowerCase(string& s) {
 }
 void sendImage(int socket, cv::Mat image, sockaddr_in server, const string& path)
 {
-    std::cout << "Sending Image" << std::endl;
     vector<uchar> imageToSend;
     cv::imencode(path, image, imageToSend);
     size_t imageSize = imageToSend.size();
@@ -53,15 +50,15 @@ void sendImage(int socket, cv::Mat image, sockaddr_in server, const string& path
     char sizeBuffer[sizeof(size_t)];
     memcpy(sizeBuffer, &imageSize, sizeof(size_t)); //stores the size of the image as a char
     sendto(socket, (const char*)sizeBuffer, sizeof(size_t), 0, (const struct sockaddr*)&server, sizeof(server)); //sends the size of the image for the client to copy
-    std::cout << imageToSend.size();
     while (remainingBytes > 0) {
         size_t sendingSize = remainingBytes > BUFFER_SIZE ? BUFFER_SIZE : remainingBytes; //ensures the packet size does not exceed the buffer size for UDP
         while (sendto(socket, (char*)currentSendPos, sendingSize, 0, (const struct sockaddr*)&server, sizeof(server)) < 0) {
-            std::cout << WSAGetLastError() << std::endl;
+            std::cout << "Error sending packet, retrying" << std::endl;
             break;
         }
         remainingBytes -= sendingSize;
         currentSendPos += sendingSize; //change pointer address to be equal to how long the current packet is
+        this_thread::sleep_for(chrono::milliseconds(1)); //asks main thread to wait 1 millisecond to ensure that server has correctly recieved the packet
     }
 }
 void recieveImage(int socket, sockaddr_in server, cv::Mat& finalImage) {
@@ -173,7 +170,6 @@ int main() {
             finalImage = filter->process();
             break;
         case FLIP:
-            std::cout << "Called for no fucking reason" << std::endl;
             filter = new Flip(argumentsList, image);
             finalImage = filter->process();
             break;
@@ -188,6 +184,8 @@ int main() {
         default:
             cout << "Incorrect filter supplied" << endl;
             closesocket(serverSocket);
+            WSACleanup(); 
+            exit(-1); //in order for program to break cleanly, WSACleanUp must be called as well as exit to quit the application
         }
     }
     

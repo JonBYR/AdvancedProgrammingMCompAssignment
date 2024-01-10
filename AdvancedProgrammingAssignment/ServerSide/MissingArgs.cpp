@@ -1,10 +1,11 @@
 #include "MissingArgs.h"
-MissingArgs::MissingArgs() {
-	message = "There are too few parameters given for your filter!";
+MissingArgs::MissingArgs(int num, const string& s) {
+	message = s;
+	position = num;
 }
 
 ostream& operator<<(ostream& os, const MissingArgs& e) 
 {
-	os << e.message;
+	os << "Operation " << e.message << " requires " << e.position << " arguments";
 	return os;
 }

@@ -6,6 +6,7 @@
 #include <opencv2/opencv.hpp>
 #include "InvalidOperationException.h"
 #include "NonNumeric.h"
+#include "MissingArgs.h"
 using namespace std;
 class imageProcessing {
 public:
@@ -27,7 +28,7 @@ inline void doubleCheck(string& arg, double& num) throw(NonNumeric) //not a func
 	doubleStringStream >> doubleCheck; //method taken from https://stackoverflow.com/questions/29169153/how-do-i-verify-a-string-is-valid-double-even-if-it-has-a-point-in-it
 	if (doubleStringStream.fail()) 
 	{
-		throw NonNumeric(arg, 2); //if the conversion fails it is not a double and so therefore return false
+		throw NonNumeric(arg, 4); //if the conversion fails it is not a double and so therefore return false
 	}
 	else if (doubleStringStream.eof()) 
 	{

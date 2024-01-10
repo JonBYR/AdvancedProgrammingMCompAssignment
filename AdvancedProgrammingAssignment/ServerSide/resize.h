@@ -3,7 +3,7 @@
 class Resize : public imageProcessing
 {
 public:
-    Resize(vector<string> remainingArgs, cv::Mat i);
+    Resize(vector<string> remainingArgs, cv::Mat i) throw(MissingArgs);
     cv::Mat process() throw(NonNumeric);
 private:
     cv::Mat adjustedImage;

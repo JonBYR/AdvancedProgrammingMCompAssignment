@@ -6,7 +6,6 @@ class ColourAdjustment : public imageProcessing
 {
     public:
         ColourAdjustment(vector<string> remainingArgs, cv::Mat i);
-        ~ColourAdjustment();
         virtual cv::Mat process() throw(InvalidOperationException);
     private:
         cv::Mat adjustedImage;

@@ -1,5 +1,6 @@
 #include "rotation.h"
-rotation::rotation(vector<string> remainingArgs, cv::Mat i) : imageProcessing(remainingArgs, i) {
+rotation::rotation(vector<string> remainingArgs, cv::Mat i) throw(MissingArgs) : imageProcessing(remainingArgs, i) {
+	if (remainingArgs.size() < 3) throw MissingArgs(5, filterType);
 }
 cv::Mat rotation::process() throw(InvalidOperationException) {
 	if (requiredFunctionality == "counterclockwise") requiredNumber = 360 - requiredNumber; //counterclockwise will be the inverse of rotating by the current angle

@@ -1,7 +1,8 @@
 #include "resize.h"
-Resize::Resize(vector<string> remainingArgs, cv::Mat i) : imageProcessing(remainingArgs, i) {
-    width = (int)requiredNumber;
-    height = stoi(requiredFunctionality); //needed to create the dimensions for the resized image
+Resize::Resize(vector<string> remainingArgs, cv::Mat i) throw(MissingArgs) : imageProcessing(remainingArgs, i) {
+    if (remainingArgs.size() < 3) throw MissingArgs(5, filterType);
+    width = 0;
+    height = 0;
 }
 cv::Mat Resize::process() throw(NonNumeric) {
     int width = (int)requiredNumber;
@@ -10,7 +11,7 @@ cv::Mat Resize::process() throw(NonNumeric) {
     }
     else 
     {
-        throw NonNumeric(requiredFunctionality, 4); //in the user input this would be the fourth argument
+        throw NonNumeric(requiredFunctionality, 5); //in the user input this would be the fourth argument
     }
     resize(image, adjustedImage, cv::Size(width, height), cv::INTER_LINEAR); //function required for resizing in opencv
     return adjustedImage;

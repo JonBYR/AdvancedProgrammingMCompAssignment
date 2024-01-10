@@ -6,7 +6,7 @@ NonNumeric::NonNumeric(string notNumber, int pos) {
 
 ostream& operator<<(ostream& os, const NonNumeric& e)
 {
-	os << "At position" << e.position << " " << e.error << " should be numeric!";
+	os << "At position " << e.position << " " << e.error << " should be a numeric value!";
 	return os;
 }
 
