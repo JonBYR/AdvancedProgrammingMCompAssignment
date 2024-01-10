@@ -11,4 +11,5 @@ private:
     void greyScale();
     //void greyScale(const int &startRow, const int &threadSize);
     cv::Mat adjustedImage;
+    mutex threadLock;
 };

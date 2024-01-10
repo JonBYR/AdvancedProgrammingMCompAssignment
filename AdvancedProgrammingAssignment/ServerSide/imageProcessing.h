@@ -13,7 +13,7 @@ public:
 	imageProcessing(vector<string> remainingArgs, cv::Mat i);
 	virtual cv::Mat process() = 0;
 protected: //these need to be accessed by child classes
-	cv::Mat image;
+	cv::Mat image; //some child classes will require the original image
 	string filterType;
 	double requiredNumber;
 	string requiredFunctionality;
