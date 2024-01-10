@@ -1,8 +1,6 @@
 #include "ColourConvert.h"
 ColourConvert::ColourConvert(vector<string> remainingArgs, cv::Mat i) : imageProcessing(remainingArgs, i) {
-    //adjustedImage(move(image)); //use this if using the threaded functions, otherwise delete this line
-    adjustedImage = i;
-    //using inbuilt move constructor to copy information from image to adjustedImage
+    adjustedImage = move(image); //using move as it is more memory efficent than copy constructor
 }
 cv::Mat ColourConvert::process() {
     if (filterType == "greyscale") {
