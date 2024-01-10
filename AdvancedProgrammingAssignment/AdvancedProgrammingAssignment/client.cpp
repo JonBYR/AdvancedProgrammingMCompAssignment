@@ -116,6 +116,8 @@ int main(int argc, char** argv) {
     {
         cout << "Cannot open image" << endl;
         closesocket(clientSocket);
+        WSACleanup();
+        exit(-1);
     }
     imshow("Test Window", image);
     waitKey(0); //opencv function needed as it allows image to stay displayed
@@ -138,7 +140,7 @@ int main(int argc, char** argv) {
     imshow("FinalWindow", finalImage);
     waitKey(0);
     destroyWindow("FinalWindow");
-    //imwrite is used to write image to path location
+    imwrite(".\\ProcessedImage.jpg", finalImage);
     closesocket(clientSocket);
 }
 

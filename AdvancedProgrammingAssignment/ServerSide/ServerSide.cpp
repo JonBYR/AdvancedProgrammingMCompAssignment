@@ -27,6 +27,7 @@ using namespace std;
 enum Filters { ROTATE, COLOURADJUST, BLUR, FLIP, RESIZE, COLOURCONVERT }; //enum used to contain filters
 Filters enumConvert(const string& filterName) throw(InvalidOperationException) //const used to make sure filterName does not change
 {
+    std::cout << filterName << std::endl;
     if (filterName == "rotation") return ROTATE;
     else if (filterName == "brightness" || filterName == "contrast" || filterName == "gamma") return COLOURADJUST;
     else if (filterName == "guassian" || filterName == "box" || filterName == "sharpening") return BLUR;
@@ -34,6 +35,7 @@ Filters enumConvert(const string& filterName) throw(InvalidOperationException) /
     else if (filterName == "size") return RESIZE;
     else if (filterName == "greyscale" || filterName == "hsv") return COLOURCONVERT;
     else {
+        std::cout << "Thrown Called" << std::endl;
         throw InvalidOperationException(filterName);
     }
 }
@@ -140,7 +142,6 @@ int main() {
     string path = argumentsList[1];
     argumentsList.erase(argumentsList.begin() + 1); //second and first element no longer needed for the vector
     argumentsList.erase(argumentsList.begin() + 0);
-    //argumentsList.erase(argumentsList.end()); //anything past the arguments is just empty space filled by the char array which is no longer needed
     imageProcessing* filter; //required for dynamic allocation
     Filters f;
     try
@@ -149,9 +150,10 @@ int main() {
     }
     catch (InvalidOperationException e)
     {
-        //cout << e << endl; //operator overloading should display message from e
-        cout << "Catch called 1" << std::endl;
+        cout << e << endl; //operator overloading should display message from e
         closesocket(serverSocket);
+        WSACleanup();
+        exit(-1);
     }
     cv::Mat finalImage;
     try
@@ -161,22 +163,28 @@ int main() {
         case ROTATE:
             filter = new rotation(argumentsList, image); //filter type is not known at compile time, dynamic objects are used for polymorphism
             finalImage = filter->process(); //calls overrwritten process method
+            break;
         case COLOURADJUST:
             filter = new ColourAdjustment(argumentsList, image);
             finalImage = filter->process();
+            break;
         case BLUR:
             filter = new Blur(argumentsList, image);
             finalImage = filter->process();
+            break;
         case FLIP:
             std::cout << "Called for no fucking reason" << std::endl;
             filter = new Flip(argumentsList, image);
             finalImage = filter->process();
+            break;
         case RESIZE:
             filter = new Resize(argumentsList, image);
             finalImage = filter->process();
+            break;
         case COLOURCONVERT:
             filter = new ColourConvert(argumentsList, image);
             finalImage = filter->process();
+            break;
         default:
             cout << "Incorrect filter supplied" << endl;
             closesocket(serverSocket);
@@ -185,19 +193,22 @@ int main() {
     
     catch (InvalidOperationException e)
     {
-        //cout << "Operation of type " << e << "does not exist!" << endl;
-        cout << "Catch called 2" << std::endl;
+        cout << e << endl;
         closesocket(serverSocket);
+        WSACleanup();
+        exit(-1);
     }
     catch (NonNumeric e) {
-        //cout << "String: " << e << " was detected when it should be numeric!" << endl;
-        cout << "Catch called 3" << std::endl;
+        cout << e << endl;
         closesocket(serverSocket);
+        WSACleanup();
+        exit(-1);
     }
     catch (MissingArgs e) {
-        //cout << e << endl;
-        cout << "Catch called 4" << std::endl;
+        cout << e << endl;
         closesocket(serverSocket);
+        WSACleanup();
+        exit(-1);
     }
     
     size_t pos = path.find(".jpg");
