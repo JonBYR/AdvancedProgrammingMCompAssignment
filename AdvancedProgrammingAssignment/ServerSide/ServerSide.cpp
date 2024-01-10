@@ -29,10 +29,10 @@ Filters enumConvert(const string& filterName) throw(InvalidOperationException) /
 {
     if (filterName == "rotation") return ROTATE;
     else if (filterName == "brightness" || filterName == "contrast" || filterName == "gamma") return COLOURADJUST;
-    else if (filterName == "guassian" || filterName == "box" || filterName == "sharpening") return BLUR;
+    else if (filterName == "box" || filterName == "sharpening") return BLUR;
     else if (filterName == "flip") return FLIP;
     else if (filterName == "size") return RESIZE;
-    else if (filterName == "greyscale" || filterName == "hsv") return COLOURCONVERT;
+    else if (filterName == "greyscale") return COLOURCONVERT;
     else {
         throw InvalidOperationException(filterName);
     }

@@ -9,6 +9,6 @@ public:
     cv::Mat process() throw(InvalidOperationException);
 private:
     void greyScale();
-    void HSV();
+    void greyScale(const int &startRow, const int &threadSize);
     cv::Mat adjustedImage;
 };
