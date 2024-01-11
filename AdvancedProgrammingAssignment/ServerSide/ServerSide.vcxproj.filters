@@ -48,6 +48,12 @@
     <ClCompile Include="Blur.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FlipException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SizeException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rotation.h">
@@ -78,6 +84,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Blur.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FlipException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SizeException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

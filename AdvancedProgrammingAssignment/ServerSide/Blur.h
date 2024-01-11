@@ -11,5 +11,5 @@ private:
     cv::Mat adjustedImage;
     void box();
     void sharpening();
-    const int MAX_KERNEL_LENGTH = 31;
+    const int MAX_KERNEL_LENGTH = 31; //required for box blur and connot be modified
 };

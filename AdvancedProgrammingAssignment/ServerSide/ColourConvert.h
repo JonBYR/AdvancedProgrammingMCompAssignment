@@ -8,8 +8,6 @@ public:
     ColourConvert(vector<string> remainingArgs, cv::Mat i);
     cv::Mat process() throw(InvalidOperationException);
 private:
-    void greyScale();
-    //void greyScale(const int &startRow, const int &threadSize);
     cv::Mat adjustedImage;
     mutex threadLock;
 };

@@ -1,17 +1,17 @@
 #include "resize.h"
 Resize::Resize(vector<string> remainingArgs, cv::Mat i) throw(MissingArgs) : imageProcessing(remainingArgs, i) {
-    if (remainingArgs.size() < 3) throw MissingArgs(5, filterType);
+    if (remainingArgs.size() < 3) throw MissingArgs(6, filterType); //resize requirs the filterType and the amount to be resized by
     width = 0;
     height = 0;
 }
-cv::Mat Resize::process() throw(NonNumeric) {
-    int width = (int)requiredNumber;
+cv::Mat Resize::process() throw(SizeException) {
+    int width = (int)requiredNumber; //double is cast to an integer value
     if(isInt(requiredFunctionality) == true) {
         height = stoi(requiredFunctionality);
     }
     else 
     {
-        throw NonNumeric(requiredFunctionality, 5); //in the user input this would be the fourth argument
+        throw SizeException(requiredFunctionality); //this is the sixth argumment the user will input
     }
     resize(image, adjustedImage, cv::Size(width, height), cv::INTER_LINEAR); //function required for resizing in opencv
     return adjustedImage;

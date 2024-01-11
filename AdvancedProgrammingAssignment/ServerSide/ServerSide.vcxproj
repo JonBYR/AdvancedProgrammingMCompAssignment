@@ -137,6 +137,7 @@
     <ClCompile Include="ColourAdjustment.cpp" />
     <ClCompile Include="ColourConvert.cpp" />
     <ClCompile Include="Flip.cpp" />
+    <ClCompile Include="FlipException.cpp" />
     <ClCompile Include="imageProcessing.cpp" />
     <ClCompile Include="InvalidOperationException.cpp" />
     <ClCompile Include="MissingArgs.cpp" />
@@ -144,18 +145,21 @@
     <ClCompile Include="resize.cpp" />
     <ClCompile Include="rotation.cpp" />
     <ClCompile Include="ServerSide.cpp" />
+    <ClCompile Include="SizeException.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Blur.h" />
     <ClInclude Include="ColourAdjustment.h" />
     <ClInclude Include="ColourConvert.h" />
     <ClInclude Include="Flip.h" />
+    <ClInclude Include="FlipException.h" />
     <ClInclude Include="imageProcessing.h" />
     <ClInclude Include="InvalidOperationException.h" />
     <ClInclude Include="MissingArgs.h" />
     <ClInclude Include="NonNumeric.h" />
     <ClInclude Include="resize.h" />
     <ClInclude Include="rotation.h" />
+    <ClInclude Include="SizeException.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

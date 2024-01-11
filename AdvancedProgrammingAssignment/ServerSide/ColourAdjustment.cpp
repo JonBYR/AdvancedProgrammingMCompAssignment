@@ -1,11 +1,11 @@
 #include "ColourAdjustment.h"
 ColourAdjustment::ColourAdjustment(vector<string> remainingArgs, cv::Mat i) : imageProcessing(remainingArgs, i) {
-    adjustedImage = cv::Mat::zeros(image.size(), image.type());
+    adjustedImage = cv::Mat::zeros(image.size(), image.type()); //to map the changes to a new image it must be mapped to an empty image
 }
 cv::Mat ColourAdjustment::process() throw(InvalidOperationException) {
     if(filterType == "brightness") brightness();
     else if (filterType == "contrast") contrast();
-    else if (filterType == "gamma") gamma();
+    else if (filterType == "gamma") gamma(); //all three are private functions as they provide functiionality only to this class
     else {
         throw InvalidOperationException(filterType);
     }
