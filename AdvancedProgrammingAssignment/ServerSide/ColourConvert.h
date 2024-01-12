@@ -9,5 +9,4 @@ public:
     cv::Mat process() throw(InvalidOperationException);
 private:
     cv::Mat adjustedImage;
-    mutex threadLock;
 };

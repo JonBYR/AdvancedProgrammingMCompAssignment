@@ -5,7 +5,7 @@
 class Flip : public imageProcessing {
 public:
     Flip(vector<string> remainingArgs, cv::Mat i);
-    virtual cv::Mat process() throw(InvalidOperationException, FlipException);
+    virtual cv::Mat process() throw(FlipException);
 private:
     cv::Mat adjustedImage;
 };
