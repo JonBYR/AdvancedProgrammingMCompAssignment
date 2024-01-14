@@ -1,7 +1,7 @@
 #pragma once
 #include "imageProcessing.h"
-class rotation : public imageProcessing {
+class Rotation : public ImageProcessing {
 public:
-	rotation(vector<string> remainingArgs, cv::Mat i) throw(MissingArgs);
+	Rotation(vector<string> remainingArgs, cv::Mat i) throw(MissingArgs);
 	virtual cv::Mat process() throw(InvalidOperationException);
 };

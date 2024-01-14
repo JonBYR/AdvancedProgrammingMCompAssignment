@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <thread>
 #include <mutex>
-class ColourConvert : public imageProcessing {
+class ColourConvert : public ImageProcessing {
 public:
     ColourConvert(vector<string> remainingArgs, cv::Mat i);
     cv::Mat process() throw(InvalidOperationException);

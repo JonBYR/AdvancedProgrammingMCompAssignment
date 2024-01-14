@@ -1,6 +1,7 @@
 Please follow the instructions below for the program:
 
 When assigning the port on the client please type in 12345. This is the port on the server side.
+IP address used is 127.0.0.1, the ip for local machines
 The following filters are allowed:
 Rotation, box blur, sharpening image, converting image to greyscale, flipping image, adjusting brightness, adjusting contrast, adjusting gamma, resizing image
 

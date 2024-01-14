@@ -19,10 +19,10 @@
 #define BUFFER_SIZE 1024
 using namespace std;
 using namespace cv;
-void closeOnError(const int& socket) { //call function if error occurs
+void closeOnError(const int& socket) { //call function if error occurs, reference used for memory efficency 
     closesocket(socket);
     WSACleanup();
-    exit(-1); //breaks program cleanly
+    exit(-1); //breaks program cleanly from executing in command line
 }
 void sendImage(int socket, Mat image, sockaddr_in server, const string& path) //path should not be modified
 {
@@ -118,9 +118,6 @@ int main(int argc, char** argv) {
         cout << "Cannot open image" << endl;
         closeOnError(clientSocket);
     }
-    imshow("Test Window", image);
-    waitKey(0); //opencv function needed as it allows image to stay displayed
-    destroyWindow("Test Window");
     // Prepare the server address structure
     struct sockaddr_in serverAddress, clientAddress;
     serverAddress.sin_family = AF_INET;
@@ -144,23 +141,29 @@ int main(int argc, char** argv) {
         closeOnError(clientSocket);
     }
     string ip = ipAndPort.substr(0, ipAndPort.find(":")); //ip will start from the start of the string until the :
-    serverAddress.sin_port = htons((u_short)portNumber);
+    serverAddress.sin_port = htons((u_short)portNumber); //htons requires an unsigned short so must be casted to an unsigned short
     serverAddress.sin_addr.s_addr =  inet_addr(ip.c_str()); //ip must be a c string
     socklen_t clientLength;
     clientLength = sizeof(clientAddress);
-    if (sendto(clientSocket, (const char*)messageToServer, 1024, 0, (const struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0) //sends input arguments for server to process as the if statement is passed
+    if (ip != "127.0.0.1") 
     {
-        std::cout << "Error connecting to server. Have you checked that your IP address and port are correct?" << std::endl; //if the if statement is called then either the IP address entered is incorrect or the port
+        std::cout << "Error connecting to server. Have you checked that your IP address and port are correct?" << std::endl; //ip address should be local ip
         closeOnError(clientSocket);
     }
+    sendto(clientSocket, (const char*)messageToServer, 1024, 0, (const struct sockaddr*)&serverAddress, sizeof(serverAddress)); //sends input arguments for server to process as the if statement is passed
     delete[] messageToServer;
     size_t pos = imagePath.find(".jpg"); //pos will be used to get the substring that denotes the image extension
-    sendImage(clientSocket, move(image), serverAddress, imagePath.substr(pos)); //image is no longer used after this function so move operation used for better memory efficency
+    sendImage(clientSocket, image, serverAddress, imagePath.substr(pos));
     Mat finalImage;
     recieveImage(clientSocket, serverAddress, finalImage); //finalImage will be adapted by call by reference
-    imshow("FinalWindow", finalImage); //shows image in new window
+    imshow("Before Filter", image); //showing image before
+    waitKey(0); //opencv function needed as it allows image to stay displayed
+    destroyWindow("Before Filter"); //after key is pressed window is deleted
+    imshow("After Filter", finalImage); //shows final image in new window after filter
     waitKey(0);
-    destroyWindow("FinalWindow");
-    imwrite(".\\ProcessedImage.jpg", finalImage); //stores image in new file
+    destroyWindow("After Filter");
+    imwrite(move(imagePath), move(finalImage)); //stores image in new file and use move operation as these variables will no longer be needed since this is the final line
+    //move used as it is more memory efficent than copying
+    //imagePath is the save location of the original image
     closesocket(clientSocket);
 }

@@ -1,5 +1,5 @@
 #include "ColourAdjustment.h"
-ColourAdjustment::ColourAdjustment(vector<string> remainingArgs, cv::Mat i) : imageProcessing(remainingArgs, i) {
+ColourAdjustment::ColourAdjustment(vector<string> remainingArgs, cv::Mat i) : ImageProcessing(remainingArgs, i) {
     adjustedImage = cv::Mat::zeros(image.size(), image.type()); //to map the changes to a new image it must be mapped to an empty image
 }
 cv::Mat ColourAdjustment::process() throw(InvalidOperationException) {

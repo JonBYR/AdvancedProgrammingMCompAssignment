@@ -3,7 +3,7 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
-class Blur : public imageProcessing {
+class Blur : public ImageProcessing {
 public:
     Blur(vector<string> remainingArgs, cv::Mat i);
     virtual cv::Mat process() throw(InvalidOperationException);

@@ -1,5 +1,5 @@
 #include "Flip.h"
-Flip::Flip (vector<string> remainingArgs, cv::Mat i) : imageProcessing(remainingArgs, i) {
+Flip::Flip (vector<string> remainingArgs, cv::Mat i) : ImageProcessing(remainingArgs, i) {
     adjustedImage = cv::Mat::zeros(image.size(), image.type()); //in order to map the flipped image it must be mapped to an empty Mat
     }
 cv::Mat Flip::process() throw(FlipException) {

@@ -10,9 +10,9 @@
 #include "FlipException.h"
 #include "SizeException.h"
 using namespace std; //all includes and namespaces are inherited by child classes, including exceptions
-class imageProcessing {
+class ImageProcessing {
 public:
-	imageProcessing(vector<string> remainingArgs, cv::Mat i);
+	ImageProcessing(vector<string> remainingArgs, cv::Mat i);
 	virtual cv::Mat process() = 0;
 protected: //these need to be accessed by child classes
 	cv::Mat image; //some child classes will require the original image

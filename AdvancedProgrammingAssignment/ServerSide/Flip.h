@@ -2,7 +2,7 @@
 #include "imageProcessing.h"
 #include <opencv2/core/core.hpp> 
 #include <opencv2/highgui/highgui.hpp> 
-class Flip : public imageProcessing {
+class Flip : public ImageProcessing {
 public:
     Flip(vector<string> remainingArgs, cv::Mat i);
     virtual cv::Mat process() throw(FlipException);

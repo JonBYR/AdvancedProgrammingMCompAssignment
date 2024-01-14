@@ -143,7 +143,7 @@ int main() {
     argumentsList.erase(argumentsList.begin() + 2);
     argumentsList.erase(argumentsList.begin() + 1); //third, second and first element no longer needed for the vector as it contains server ip, image path and client executable respectively
     argumentsList.erase(argumentsList.begin() + 0);
-    imageProcessing* filter; //required for dynamic allocation
+    ImageProcessing* filter; //required for dynamic allocation
     Filters f;
     try
     { //argumentsList[0] should now be the filter used
@@ -160,7 +160,7 @@ int main() {
         switch (f)
         {
         case ROTATE:
-            filter = new rotation(argumentsList, image); //filter type is not known at compile time, dynamic objects are used for polymorphism
+            filter = new Rotation(argumentsList, image); //filter type is not known at compile time, dynamic objects are used for polymorphism
             finalImage = filter->process(); //calls overrwritten process method which is unique to each child, perfoming it's own functionality
             delete filter; //dynamic pointers must be deleted after use
             break;
@@ -194,7 +194,7 @@ int main() {
             closeOnError(serverSocket);
         }
     }
-    catch (InvalidOperationException e) //any exceptions thrown in the objects are caught here and use their overloaded << operator
+    catch (InvalidOperationException e) //any exceptions thrown in the objects are caught here and use their overloaded << operator defined in the exception classes
     {
         cout << e << endl;
         closeOnError(serverSocket);

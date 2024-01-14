@@ -1,5 +1,5 @@
 #include "imageProcessing.h"
-imageProcessing::imageProcessing(vector<string> remainingArgs, cv::Mat i) {
+ImageProcessing::ImageProcessing(vector<string> remainingArgs, cv::Mat i) {
 	if (remainingArgs.size() == 1) 
 	{
 		filterType = remainingArgs[0];

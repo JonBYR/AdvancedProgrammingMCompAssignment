@@ -2,7 +2,7 @@
 #include "imageProcessing.h"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
-class ColourAdjustment : public imageProcessing 
+class ColourAdjustment : public ImageProcessing 
 {
     public:
         ColourAdjustment(vector<string> remainingArgs, cv::Mat i);

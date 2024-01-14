@@ -1,6 +1,6 @@
 #pragma once
 #include "imageProcessing.h"
-class Resize : public imageProcessing
+class Resize : public ImageProcessing
 {
 public:
     Resize(vector<string> remainingArgs, cv::Mat i) throw(MissingArgs);

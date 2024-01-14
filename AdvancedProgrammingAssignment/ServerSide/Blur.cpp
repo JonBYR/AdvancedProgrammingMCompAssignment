@@ -1,5 +1,5 @@
 #include "Blur.h"
-Blur::Blur(vector<string> remainingArgs, cv::Mat i) : imageProcessing(remainingArgs, i) {
+Blur::Blur(vector<string> remainingArgs, cv::Mat i) : ImageProcessing(remainingArgs, i) {
     adjustedImage = image.clone(); //opencv operations listed below needs a clone of the original image
 }
 cv::Mat Blur::process() throw(InvalidOperationException) {
