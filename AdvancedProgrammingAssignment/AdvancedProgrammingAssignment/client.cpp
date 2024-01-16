@@ -26,8 +26,9 @@ void closeOnError(const int& socket) { //call function if error occurs, referenc
 }
 void sendImage(int socket, Mat image, sockaddr_in server, const string& path) //path should not be modified
 {
-    vector<uchar> imageToSend;
-    imencode(path, image, imageToSend);
+    vector<uchar> imageToSend; //image can only be sent as a character array/vector 
+    imencode(path, image, imageToSend); //imencode converts image to vector to be sent to the server via UDP. path contains extension which specifies if image is jpg/png etc.
+    //extension required as jpg or png have different sizes (hence why encode converts to vector)
     size_t imageSize = imageToSend.size();
     uchar* currentSendPos = &imageToSend[0]; //starting position to send image data 
     size_t remainingBytes = imageSize; //size of image left to send (that is partitioned in packets)
@@ -36,7 +37,7 @@ void sendImage(int socket, Mat image, sockaddr_in server, const string& path) //
     sendto(socket, (const char*)sizeBuffer, sizeof(size_t), 0, (const struct sockaddr*)&server, sizeof(server)); //sends the size of the image for the server to copy
     while (remainingBytes > 0) {
         size_t sendingSize = remainingBytes > BUFFER_SIZE ? BUFFER_SIZE : remainingBytes; //ensures the packet size does not exceed the buffer size for UDP
-        while (sendto(socket, (char*)currentSendPos, sendingSize, 0, (const struct sockaddr*)&server, sizeof(server)) < 0) {
+        while (sendto(socket, (char*)currentSendPos, sendingSize, 0, (const struct sockaddr*)&server, sizeof(server)) < 0) { //sends over the portion of the image from currentSendPos through to currentSendPos + sendingSize
             std::cout << "Error sending packet, redoing" << std::endl;
         }
         remainingBytes -= sendingSize;
@@ -49,7 +50,7 @@ void recieveImage(int socket, sockaddr_in &server, Mat& finalImage) {
     char sizeRecieved[sizeof(size_t)];
     size_t newBufferSize;
     int clientLength = sizeof(sockaddr_in);
-    while (!serverSend) //client is waiting for the server to send information
+    while (!serverSend) //while client is waiting for the server to send information
     {
         if (recvfrom(socket, (char*)sizeRecieved, sizeof(size_t), 0, (struct sockaddr*)&server, &clientLength) == SOCKET_ERROR) { //if server has not yet send information
             std::cout << "No server has been established. Have you run the server? Is the port given the same as the server?" << std::endl;
@@ -95,7 +96,7 @@ int main(int argc, char** argv) {
 #endif
 
     int clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
-    std::string imagePath = argv[2]; //stores path for later (3rd argument
+    std::string imagePath = argv[2]; //stores path for later (3rd argument)
     Mat image = imread(imagePath, IMREAD_COLOR); //loads image in colour
     if (clientSocket == -1) {
         std::cerr << "Error creating socket." << std::endl;
@@ -107,9 +108,9 @@ int main(int argc, char** argv) {
         char* currentArg = argv[i];
         for (int j = 0; j < strlen(argv[i]); j++) {
             *messagePoint = currentArg[j]; //dereferencing pointer assigns the character of messageToServer at position messagePoint
-            messagePoint++; //will cause the next character in messagetoserver to be the next index via pointer addition
+            messagePoint++; //will cause the next character in messageToServer to be the next index via pointer addition
         }
-        *messagePoint = ' '; //dereference so that the next char after a parameter is a space
+        *messagePoint = ' '; //dereference so that the next char after an argument is a space
         messagePoint++;
     }
     *messagePoint = '\0'; //assigning a null character at the end of the c string to signify we are out of arguments

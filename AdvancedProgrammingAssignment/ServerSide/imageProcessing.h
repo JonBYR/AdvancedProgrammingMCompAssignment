@@ -13,7 +13,7 @@ using namespace std; //all includes and namespaces are inherited by child classe
 class ImageProcessing {
 public:
 	ImageProcessing(vector<string> remainingArgs, cv::Mat i);
-	virtual cv::Mat process() = 0;
+	virtual cv::Mat process() = 0; //pure virtual to specify this must be overridden
 protected: //these need to be accessed by child classes
 	cv::Mat image; //some child classes will require the original image
 	string filterType; //filterType refers to the type of filter operation i.e rotation
@@ -23,9 +23,9 @@ private:
 	bool isDouble;
 };
 
-inline void doubleCheck(string& arg, double& num) throw(NonNumeric) //not a function call, not tied to class so class is still abstract
-{ //inline functions are performed at compile time and do not have function call overhead (execution time to call function)
-	auto doubleCheck = double();
+inline void doubleCheck(string& arg, double& num) throw(NonNumeric) //not a function call
+{ //inline functions are performed at compile time and do not have function call overhead (execution time to call function), theoretically making them faster
+	auto doubleCheck = double(); //when inline is called, it specifies that these lines of code are executed next, rather than a function
 	auto doubleStringStream = istringstream(arg);
 	doubleStringStream >> doubleCheck; //method taken from https://stackoverflow.com/questions/29169153/how-do-i-verify-a-string-is-valid-double-even-if-it-has-a-point-in-it
 	if (doubleStringStream.fail()) 

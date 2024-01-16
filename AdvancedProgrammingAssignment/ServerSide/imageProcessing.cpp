@@ -9,7 +9,7 @@ ImageProcessing::ImageProcessing(vector<string> remainingArgs, cv::Mat i) {
 		filterType = remainingArgs[0];
 		if (filterType == "box" || filterType == "greyscale" || filterType == "sharpening");
 		//these operations require one argument so double check does not apply to them
-		else doubleCheck(remainingArgs[1], requiredNumber);
+		else doubleCheck(remainingArgs[1], requiredNumber); //calls inline function, meaning that all lines within the function are the next lines executed by the else statement
 	}
 	else 
 	{

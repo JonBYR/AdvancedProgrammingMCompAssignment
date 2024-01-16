@@ -16,3 +16,7 @@ Brightness: brightness "value" (if no value is given it is by default 0)
 Contrast: contrast "value" (if no value is given it is by default 0)
 Gamma: gamma "value" (if no value is given it is by default 0)
 Resize: size "width" "height" (all 3 arguments must be given to execute)
+
+The spheal.jpg image is provided for your own use for testing
+
+The directory needed is C:\AdvancedProgrammingMCompAssignment\AdvancedProgrammingAssignment\x64\Debug

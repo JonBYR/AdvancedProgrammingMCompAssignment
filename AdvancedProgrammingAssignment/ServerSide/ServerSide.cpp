@@ -42,7 +42,7 @@ Filters enumConvert(const string& filterName) throw(InvalidOperationException) /
         throw InvalidOperationException(filterName); //any invalid filter names will throw this exception
     }
 }
-void lowerCase(string& s) { //call by reference used to adapt change the string that is passed through
+void lowerCase(string& s) { //call by reference used to adapt change the string that is passed through and to reduce overhead in memory
     transform(s.begin(), s.end(), s.begin(), [](unsigned char c) {return tolower(c); }); //standard transform function in c++ to convert to lower case
 }
 void sendImage(int socket, cv::Mat image, sockaddr_in server, const string& path) //call by reference is more memory efficent and const used so there is no danger of string being overwritten

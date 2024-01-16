@@ -5,7 +5,7 @@ ColourAdjustment::ColourAdjustment(vector<string> remainingArgs, cv::Mat i) : Im
 cv::Mat ColourAdjustment::process() throw(InvalidOperationException) {
     if(filterType == "brightness") brightness();
     else if (filterType == "contrast") contrast();
-    else if (filterType == "gamma") gamma(); //all three are private functions as they provide functiionality only to this class
+    else if (filterType == "gamma") gamma(); //all three are private functions as they provide functionality only to this class
     else {
         throw InvalidOperationException(filterType);
     }
